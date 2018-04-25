@@ -2,7 +2,9 @@
 title: "Practical Machine Learning Course Project"
 author: "Manuel"
 date: "25 de abril de 2018"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -23,11 +25,7 @@ summary(cars)
 
 You can also embed plots, for example:
 
-<<<<<<< HEAD
 ```{r pressure, echo=TRUE}
-=======
-```{r pressure, echo=FALSE}
->>>>>>> 17635a6569e9505af28ea943409aaa9e5d865208
 plot(pressure)
 ```
 
