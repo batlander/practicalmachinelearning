@@ -23,7 +23,11 @@ summary(cars)
 
 You can also embed plots, for example:
 
+<<<<<<< HEAD
 ```{r pressure, echo=TRUE}
+=======
+```{r pressure, echo=FALSE}
+>>>>>>> 17635a6569e9505af28ea943409aaa9e5d865208
 plot(pressure)
 ```
 
