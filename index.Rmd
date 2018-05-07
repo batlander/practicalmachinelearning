@@ -6,30 +6,60 @@ output:
   html_document: 
     keep_md: yes
 ---
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(caret)
+library(knitr)
+```
+
 ## Managing the data
 
-```{r}
-test <- testing[,colSums(is.na(testing)) == 0] 
-examen <- testing[,names(test)]
-iguales <- (names(training) == names(examen))
-datos <- training[iguales]
-evaluacion <- testing[iguales]
+```{r, warning=FALSE}
+training <- read_csv("training.csv", col_types = cols(cvtd_timestamp = col_datetime(format = "%d/%m/%Y %H:%M")))
+testing <- read_csv("testing.csv", col_types = cols(cvtd_timestamp = col_datetime(format = "%d/%m/%Y %H:%M")))
+datos <- training[,colSums(is.na(testing)) == 0]
+datos <- datos[,-c(0:6)]
+test <- testing[,colSums(is.na(testing)) == 0]
+test <- test[,-c(0:6)]
 ```
 
 ## Making the model
 
 ```{r}
-inTrain <- createDataPartition(y=datos$problem_id, p = 0.75, list = FALSE)
+inTrain <- createDataPartition(y=datos$classe, p = 0.75, list = FALSE)
 entreno <- datos[inTrain,]
 testeo <- datos[-inTrain,]
+rForest <- train(classe ~., data = entreno, method = "rpart", preProcess = c("center", "scale"), na.action = na.exclude, tuneLength=100)
+Boosting <- train(classe ~., data = entreno, method = "gbm", preProcess = c("center", "scale"), na.action = na.exclude)
+lda <- train(classe ~., data = entreno, method = "lda", preProcess = c("center", "scale"), na.action = na.exclude)
+predrF <- predict(rForest, testeo)
+predBo <- predict(Boosting, testeo)
+predlda <- predict(lda, testeo)
+testeo$classe <- as.factor(testeo$classe)
+```
+   
+
+## Confusion Matrix
+
+```{r, echo=TRUE}
+confusionMatrix(predrF, testeo$classe)
+confusionMatrix(predBo, testeo$classe)
+confusionMatrix(predlda, testeo$classe)
 ```
 
-## Including Plots
+As we already have a 99% accuracy result with boostong method, lets go to examine the examen data.
 
-You can also embed plots, for example:
+## Examen data
+```{r}
+predrF2 <- predict(rForest, test)
+predBo2 <- predict(Boosting, test)
+predlda2 <- predict(lda, test)
 
-```{r pressure, echo=TRUE}
-plot(pressure)
+#We choose the predBo2 cecause of the accuracy, Let´s get a view of the prediction.
+
+print(predBo2)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+And with this resoult, the test quiz is 100% cleared.
