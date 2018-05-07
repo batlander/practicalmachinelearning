@@ -56,10 +56,9 @@ predrF2 <- predict(rForest, test)
 predBo2 <- predict(Boosting, test)
 predlda2 <- predict(lda, test)
 
-#We choose the predBo2 cecause of the accuracy, Let´s get a view of the prediction.
+# We choose the predBo2 cecause of the accuracy, Let´s get a view of the prediction.
 
 print(predBo2)
-
 ```
 
 And with this resoult, the test quiz is 100% cleared.
